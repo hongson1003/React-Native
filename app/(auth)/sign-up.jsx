@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { images } from "../../constants";
@@ -19,7 +19,7 @@ const SignUpScreen = () => {
   const handleOnPress = async () => {
     // validate
     if (!form.username || !form.email || !form.password) {
-      alert('Please fill all fields');
+      Alert('Please fill all fields');
       return;
     }
 
@@ -31,7 +31,7 @@ const SignUpScreen = () => {
       if (user)
         router.push('/home');
       else
-        alert('Sign up failed');
+        Alert('Sign up failed');
     } catch (error) {
       setIsSubmitting(false);
     }

@@ -2,6 +2,7 @@ import { SplashScreen, Stack } from "expo-router";
 import React, { useEffect } from "react";
 import { NativeWindStyleSheet } from "nativewind";
 import { useFonts } from "expo-font";
+import GlobalProvider from "../context/GlobalProvider";
 
 NativeWindStyleSheet.setOutput({
     default: "native",
@@ -32,26 +33,34 @@ const RootLayout = () => {
         return null;
 
     return (
-        <Stack>
-            <Stack.Screen
-                name="index"
-                options={{
-                    headerShown: false
-                }}
-            />
-            <Stack.Screen
-                name="(auth)"
-                options={{
-                    headerShown: false
-                }}
-            />
-            <Stack.Screen
-                name="search"
-                options={{
-                    headerShown: false
-                }}
-            />
-        </Stack>
+        <GlobalProvider>
+            <Stack>
+                <Stack.Screen
+                    name="index"
+                    options={{
+                        headerShown: false
+                    }}
+                />
+                <Stack.Screen
+                    name="(auth)"
+                    options={{
+                        headerShown: false
+                    }}
+                />
+                <Stack.Screen
+                    name="(tabs)"
+                    options={{
+                        headerShown: false
+                    }}
+                />
+                <Stack.Screen
+                    name="search"
+                    options={{
+                        headerShown: false
+                    }}
+                />
+            </Stack>
+        </GlobalProvider>
     )
 }
 

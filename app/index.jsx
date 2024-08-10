@@ -1,16 +1,25 @@
-import { Link, router } from "expo-router";
-import React from "react";
+import { Redirect, router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect } from "react";
 import { Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "../constants";
 import CustomButton from "../components/customButton";
-import { StatusBar } from "expo-status-bar";
+import { images } from "../constants";
+import { useGlobalContext } from "../context/GlobalProvider";
 
 const FirstScreen = () => {
+
+    const { isLoading, isLogggedIn } = useGlobalContext();
 
     const handleOnPress = () => {
         router.push('/sign-in');
     }
+
+    useEffect(() => {
+        if (!isLoading && isLogggedIn) {
+            router.push('/home');
+        }
+    }, [isLoading, isLogggedIn]);
 
     return (
         <SafeAreaView className="bg-primary h-full">

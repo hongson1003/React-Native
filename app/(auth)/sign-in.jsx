@@ -1,10 +1,10 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { images } from "../../constants";
 import FormField from '../../components/formField';
 import CustomButton from '../../components/customButton'
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { signIn } from '../../lib/appwrite';
 
 const SignInScreen = () => {
@@ -19,10 +19,9 @@ const SignInScreen = () => {
   const handleOnPress = async () => {
     // validate
     if (!form.email || !form.password) {
-      alert('Please fill all fields')
+      Alert('Please fill all fields')
       return
     }
-
     try {
       setIsSubmitting(true)
       const { email, password } = form
@@ -31,7 +30,7 @@ const SignInScreen = () => {
       if (session)
         router.push('/home')
       else
-        alert('Sign in failed')
+        Alert('Sign in failed')
     } catch (error) {
       setIsSubmitting(false)
     }
