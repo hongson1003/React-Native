@@ -1,44 +1,66 @@
-import { FlatList, Image, RefreshControl, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useState } from 'react';
-import { images } from '../../constants'
-import { icons } from '../../constants'
-import TrendingVideo from '../../components/trendingVideo';
-import VideoCard from '../../components/videoCard';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, RefreshControl, StyleSheet, Text, TextInput, View } from 'react-native';
 import EmptyVideo from '../../components/emptyVideo';
-
-const data = [
-  // {
-  //   id: '1',
-  //   title: 'First Item',
-  // },
-  // {
-  //   id: '2',
-  //   title: 'Second Item',
-  // },
-  // {
-  //   id: '3',
-  //   title: 'Third Item',
-  // }
-]
+import VideoCard from '../../components/videoCard';
+import { icons, images } from '../../constants';
+import { getAllPosts, getLastedPosts } from '../../lib/appwrite';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import TrendingVideo from '../../components/trendingVideo';
 
 const HomeScreen = () => {
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [data, setData] = useState([])
+  const [lastedVideo, setLastedVideo] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+
+  const fetchData = async () => {
+    setIsLoading(true)
+    try {
+      const response = await getAllPosts();
+      console.log(response)
+      setData(response);
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const fetchLastedVideos = async () => {
+    setIsLoading(true)
+    try {
+      const response = await getLastedPosts();
+      setLastedVideo(response);
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+    fetchLastedVideos();
+  }, [])
 
   const handleOnRefresh = () => {
-
+    setIsRefreshing(true)
+    fetchData()
+    setIsRefreshing(false)
   }
 
   return (
-    <SafeAreaView className="bg-primary px-3 py-6"
+    <SafeAreaView className="bg-primary px-3 py-6 max-h-full"
     >
       <FlatList
         data={data}
         renderItem={({ item }) => (
           <VideoCard data={item} />
         )}
-        keyExtractor={item => item.id}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={item => item.$id}
         ListHeaderComponent={() => (
-          <View>
+          <View className="mb-5">
             <View className="flex-row justify-between items-center">
               <View>
                 <Text className="text-sm font-plight text-white">Welcome Back</Text>
@@ -52,8 +74,8 @@ const HomeScreen = () => {
             <View className="h-12 border-zinc-700 border mt-5 rounded-xl px-4 flex-row items-center">
               <TextInput
                 placeholder="Search for a video or a playlist"
-                placeholderTextColor="text-zinc-400"
-                className="bg-secondary text-white rounded-lg flex-1 font-extralight"
+                placeholderTextColor="#ffffff"
+                className="bg-secondary text-white rounded-lg flex-1 font-extralight h-full"
                 style={{ outline: 'none' }}
               />
               <Image
@@ -61,8 +83,8 @@ const HomeScreen = () => {
                 className="w-5 h-5"
               />
             </View>
-            <Text className="text-white mt-5 font-plight">Lasted Videos</Text>
-            <TrendingVideo data={data} />
+            <Text className="text-white mt-5 mb-2 font-plight">Lasted Videos</Text>
+            <TrendingVideo data={lastedVideo} />
           </View >
         )}
         ListEmptyComponent={() => (
